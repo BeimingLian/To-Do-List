@@ -12,30 +12,30 @@ import java.util.List;
 public class tasksServiceImpl implements tasksService {
 
     @Autowired
-    private tasksMapper tasksMapper;
+    private tasksMapper taskMapper;
 
     @Override
     public tasks selectTaskById(Long id) {
-        return tasksMapper.selectTaskById(id);
+        return taskMapper.selectTaskById(id);
     }
 
     @Override
     public List<tasks> selectAllTasks() {
-        return tasksMapper.selectAllTasks();
+        return taskMapper.selectAllTasks();
     }
 
     @Override
     public int insertTask(tasks task) {
-        return tasksMapper.insertTask(task);
+        return taskMapper.insertTask(task);
     }
 
     @Override
     public int updateTask(tasks task) {
-        return tasksMapper.updateTask(task);
+        return taskMapper.updateTask(task);
     }
 
     @Override
     public void deleteTask(Long id) {
-        tasksMapper.deleteTask(id);
+        taskMapper.deleteTask(id);
     }
 }
