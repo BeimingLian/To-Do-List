@@ -6,30 +6,30 @@
 <mapper namespace="org.demo.todo.mapper.usersMapper">
     <!-- Query to select all users -->
     <select id="selectAllUsers" resultType="org.demo.todo.domain.users">
-        SELECT * FROM User
+        SELECT * FROM users
     </select>
 
     <!-- Query to insert a new user -->
     <insert id="insertUser" parameterType="org.demo.todo.domain.users">
-        INSERT INTO User (User_name, Password, Email)
+        INSERT INTO users (User_name, Password, Email)
         VALUES (#{userName}, #{password}, #{email})
     </insert>
 
     <!-- Query to update an existing user -->
     <update id="updateUser" parameterType="org.demo.todo.domain.users">
-        UPDATE User
+        UPDATE users
         SET User_name = #{userName}, Password = #{password}, Email = #{email}
         WHERE User_id = #{id}
     </update>
 
     <!-- Query to delete a user by ID -->
     <delete id="deleteUser" parameterType="int">
-        DELETE FROM User WHERE User_id = #{id}
+        DELETE FROM users WHERE User_id = #{id}
     </delete>
 
 
     <!-- Query to select a user by ID -->
     <select id="selectUserById" parameterType="int" resultType="org.demo.todo.domain.users">
-        SELECT * FROM User WHERE User_id = #{id}
+        SELECT * FROM users WHERE User_id = #{id}
     </select>
 </mapper>
