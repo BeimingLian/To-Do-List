@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.demo.todo.mapper.usersMapper">
+    <!-- Query to select all users -->
+    <select id="selectAllUsers" resultType="org.demo.todo.domain.users">
+        SELECT * FROM User
+    </select>
+
+    <!-- Query to insert a new user -->
+    <insert id="insertUser" parameterType="org.demo.todo.domain.users">
+        INSERT INTO User (User_name, Password, Email)
+        VALUES (#{userName}, #{password}, #{email})
+    </insert>
+
+    <!-- Query to update an existing user -->
+    <update id="updateUser" parameterType="org.demo.todo.domain.users">
+        UPDATE User
+        SET User_name = #{userName}, Password = #{password}, Email = #{email}
+        WHERE User_id = #{id}
+    </update>
+
+    <!-- Query to delete a user by ID -->
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM User WHERE User_id = #{id}
+    </delete>
+
+
+    <!-- Query to select a user by ID -->
+    <select id="selectUserById" parameterType="int" resultType="org.demo.todo.domain.users">
+        SELECT * FROM User WHERE User_id = #{id}
+    </select>
+</mapper>
