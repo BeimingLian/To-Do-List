@@ -6,11 +6,11 @@ public class users {
     private String password;
     private String email;
 
-    public Long getUserId() {
+    public Long getId() {
         return id;
     }
 
-    public users setUserId(Long userId) {
+    public users setId(Long userId) {
         this.id = userId;
         return this;
     }

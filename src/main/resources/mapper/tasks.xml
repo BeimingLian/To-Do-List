@@ -12,26 +12,35 @@
     <!-- Query to insert a new task -->
     <insert id="insertTask" parameterType="org.demo.todo.domain.tasks">
         INSERT INTO tasks (Task_name, Task_description, Due_date, Status, User_id, Created_by, Update_by)
-        VALUES (#{taskName}, #{taskDescription}, #{dueDate}, #{status}, #{userID}, #{createdBy}, #{updatedBy})
+        VALUES (#{taskName}, #{taskDescription}, #{dueDate}, #{status}, #{userId}, #{createdBy}, #{updatedBy})
     </insert>
 
     <!-- Query to update an existing task -->
     <update id="updateTask" parameterType="org.demo.todo.domain.tasks">
         UPDATE tasks
         SET Task_name = #{taskName}, Task_description = #{taskDescription}, Due_date = #{dueDate},
-        Status = #{status}, User_id = #{userID}, Update_by = #{updatedBy}
+            Status = #{status}, User_id = #{userId}, Update_by = #{updatedBy}
         WHERE Task_id = #{id}
     </update>
 
     <!-- Query to delete a task by ID -->
-    <delete id="deleteTask" parameterType="int">
+    <delete id="deleteTask" parameterType="java.lang.Long">
         DELETE FROM tasks WHERE Task_id = #{id}
     </delete>
 
-
-
     <!-- Query to select a task by ID -->
-    <select id="selectTaskById" parameterType="int" resultType="org.demo.todo.domain.tasks">
-        SELECT * FROM tasks WHERE Task_id = #{id}
+    <select id="selectTaskById" parameterType="java.lang.Long" resultType="org.demo.todo.domain.tasks">
+        SELECT
+            Task_id AS id,
+            Task_name AS taskName,
+            Task_description AS taskDescription,
+            Due_date AS dueDate,
+            Status AS status,
+            User_id AS userId,
+            Created_by AS createdBy,
+            Update_by AS updatedBy
+        FROM tasks
+        WHERE Task_id = #{id}
     </select>
+
 </mapper>

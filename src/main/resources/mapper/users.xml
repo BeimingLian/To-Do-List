@@ -6,11 +6,15 @@
 <mapper namespace="org.demo.todo.mapper.usersMapper">
     <!-- Query to select all users -->
     <select id="selectAllUsers" resultType="org.demo.todo.domain.users">
-        SELECT * FROM users
+        SELECT User_id AS id,
+               User_name AS userName,
+               Password AS password,
+               Email AS email
+        FROM users
     </select>
 
     <!-- Query to insert a new user -->
-    <insert id="insertUser" parameterType="org.demo.todo.domain.users">
+    <insert id="insertUser" parameterType="org.demo.todo.domain.users" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (User_name, Password, Email)
         VALUES (#{userName}, #{password}, #{email})
     </insert>
@@ -23,13 +27,17 @@
     </update>
 
     <!-- Query to delete a user by ID -->
-    <delete id="deleteUser" parameterType="int">
+    <delete id="deleteUser" parameterType="java.lang.Long">
         DELETE FROM users WHERE User_id = #{id}
     </delete>
 
-
     <!-- Query to select a user by ID -->
-    <select id="selectUserById" parameterType="int" resultType="org.demo.todo.domain.users">
-        SELECT * FROM users WHERE User_id = #{id}
+    <select id="selectUserById" parameterType="java.lang.Long" resultType="org.demo.todo.domain.users">
+        SELECT User_id AS id,
+               User_name AS userName,
+               Password AS password,
+               Email AS email
+        FROM users
+        WHERE User_id = #{id}
     </select>
 </mapper>
