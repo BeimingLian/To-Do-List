@@ -32,7 +32,6 @@ public class TasksServiceImplTest {
         tasks newTask = new tasks();
         newTask.setTaskName("New Task");
         newTask.setTaskDescription("This is a test task.");
-        // 其他任务属性设置
 
         int result = tasksService.insertTask(newTask);
         assertEquals(1, result);
@@ -53,7 +52,7 @@ public class TasksServiceImplTest {
     @Test
     public void testDeleteTask() {
         // Assuming that you have already inserted a task with ID 1 for testing
-        Long taskId = 7L;
+        Long taskId = 10L;
 
         // First, ensure the task exists by checking if it can be fetched
         tasks task = tasksService.selectTaskById(taskId);
