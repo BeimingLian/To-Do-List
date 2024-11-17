@@ -32,6 +32,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
+          distribution: 'oracle'
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
