@@ -94,7 +94,7 @@ jobs:
 
       - name: Build and run service tests
         if: github.ref == 'refs/heads/service'
-        run: mvn -Dtest=org.demo.todo.service.* test
+        run: mvn -Dtest=**.*Service* test
 
       - name: Generate code coverage report for service tests
         if: github.ref == 'refs/heads/service'
@@ -132,7 +132,7 @@ jobs:
 
       - name: Build and run controller tests
         if: github.ref == 'refs/heads/controller'
-        run: mvn -Dtest=org.demo.todo.controller.* test
+        run: mvn -Dtest=**.*Controller* test
 
       - name: Generate code coverage report for controller tests
         if: github.ref == 'refs/heads/controller'
@@ -170,7 +170,7 @@ jobs:
 
       - name: Build and run mapper tests
         if: github.ref == 'refs/heads/mapper'
-        run: mvn -Dtest=org.demo.todo.mapper.* test
+        run: mvn -Dtest=**.*Mapper* test
 
       - name: Generate code coverage report for mapper tests
         if: github.ref == 'refs/heads/mapper'
@@ -208,7 +208,7 @@ jobs:
 
       - name: Build and run domain tests
         if: github.ref == 'refs/heads/domain'
-        run: mvn -Dtest=org.demo.todo.domain.* test
+        run: mvn -Dtest=**.*Domain* test
 
       - name: Generate code coverage report for domain tests
         if: github.ref == 'refs/heads/domain'
@@ -230,5 +230,3 @@ jobs:
             The domain tests for commit ${{ github.sha }} failed. Please check the logs for more details.
           labels: |
             bug
-
-
