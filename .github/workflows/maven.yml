@@ -21,6 +21,19 @@ on:
       - "mapper"
       
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:latest
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: to-do-list
+          MYSQL_USER: Beiming
+          MYSQL_PASSWORD: 518105309
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -109,6 +122,11 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
+
+      - name: Build and run domain tests
+        if: github.ref == 'refs/heads/domain'
+        run: mvn -Dtest=org.demo.todo.domain.* test
+
 
       - name: Build and run domain tests
         if: github.ref == 'refs/heads/domain'
