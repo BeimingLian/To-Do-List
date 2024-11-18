@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
-
-import java.sql.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,7 +51,7 @@ public class TasksServiceImplTest {
 
     @Test
     public void testDeleteTask() {
-        // Assuming that you have already inserted a task with ID 1 for testing
+        // Assuming that you have already inserted a task with ID 1 for testing.
         Long taskId = 10L;
 
         // First, ensure the task exists by checking if it can be fetched
@@ -64,6 +64,24 @@ public class TasksServiceImplTest {
         // Verify that the task has been deleted by trying to fetch it again
         tasks deletedTask = tasksService.selectTaskById(taskId);
         assertNull(deletedTask); // The task should no longer exist
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testFailingScenario() {
+
+        // intent to give bug report
+
+        tasks newTask = new tasks();
+        newTask.setTaskName("Failing Task");
+        newTask.setTaskDescription("This task is meant to fail.");
+        newTask.setDueDate("2024-12-15");
+        newTask.setStatus("Pending");
+        newTask.setUserId(5L);
+
+        // 使其失败的验证条件
+        assertEquals(1, 2, "This is a deliberate failure to test the bug reporting mechanism.");
     }
 
 }
