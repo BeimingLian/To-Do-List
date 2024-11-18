@@ -8,43 +8,88 @@ on:
       - settings
       - domain
       - xml-files
+  pull_request:
+    branches:
+      - main
+      - service
+      - settings
+      - domain
+      - xml-files
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        module: [all, service, settings, domain, xml-files]
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: 17
-        distribution: 'temurin' # Ensure Temurin JDK is used
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'adopt'
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-maven
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven
 
-    - name: Build with Maven
-      run: |
-        if [[ "${{ github.ref_name }}" == "service" ]]; then
-          mvn -pl :service -am clean test
-        elif [[ "${{ github.ref_name }}" == "settings" ]]; then
-          mvn -pl :settings -am clean test
-        elif [[ "${{ github.ref_name }}" == "domain" ]]; then
-          mvn -pl :domain -am clean test
-        elif [[ "${{ github.ref_name }}" == "xml-files" ]]; then
-          mvn -pl :xml-files -am clean test
-        else
-          mvn clean test
-        fi
+      - name: Build with Maven
+        run: mvn -B clean install
+
+  service-tests:
+    if: github.ref == 'refs/heads/service'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'adopt'
+      - name: Run Service Tests
+        run: mvn -B test -Dtest=TasksServiceImplTest
+
+  settings-tests:
+    if: github.ref == 'refs/heads/settings'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'adopt'
+      - name: Test Database Connection
+        run: mvn -B exec:java -Dexec.mainClass="org.demo.todo.settings.DatabaseTest"
+
+  domain-tests:
+    if: github.ref == 'refs/heads/domain'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'adopt'
+      - name: Run Domain Tests
+        run: mvn -B test -Dtest=DomainTests
+
+  xml-files-tests:
+    if: github.ref == 'refs/heads/xml-files'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'adopt'
+      - name: Validate XML Files
+        run: mvn validate
 
