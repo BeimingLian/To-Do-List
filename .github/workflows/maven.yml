@@ -63,6 +63,16 @@ jobs:
       - name: Generate code coverage report
         run: mvn jacoco:report
 
+      - name: Create GitHub Issue if build fails
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Build Failure - ${{ github.sha }}"
+          content: |
+            The build for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
+
   service-tests:
     runs-on: ubuntu-latest
 
@@ -83,6 +93,16 @@ jobs:
       - name: Generate code coverage report for service tests
         if: github.ref == 'refs/heads/service'
         run: mvn jacoco:report
+
+      - name: Create GitHub Issue if service tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Service Tests Failure - ${{ github.sha }}"
+          content: |
+            The service tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
 
   controller-tests:
     runs-on: ubuntu-latest
@@ -105,6 +125,16 @@ jobs:
         if: github.ref == 'refs/heads/controller'
         run: mvn jacoco:report
 
+      - name: Create GitHub Issue if controller tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Controller Tests Failure - ${{ github.sha }}"
+          content: |
+            The controller tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
+
   mapper-tests:
     runs-on: ubuntu-latest
 
@@ -126,6 +156,16 @@ jobs:
         if: github.ref == 'refs/heads/mapper'
         run: mvn jacoco:report
 
+      - name: Create GitHub Issue if mapper tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Mapper Tests Failure - ${{ github.sha }}"
+          content: |
+            The mapper tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
+
   domain-tests:
     runs-on: ubuntu-latest
 
@@ -146,4 +186,15 @@ jobs:
       - name: Generate code coverage report for domain tests
         if: github.ref == 'refs/heads/domain'
         run: mvn jacoco:report
+
+      - name: Create GitHub Issue if domain tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Domain Tests Failure - ${{ github.sha }}"
+          content: |
+            The domain tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
+
 
