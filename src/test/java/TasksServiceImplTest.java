@@ -70,7 +70,7 @@ public class TasksServiceImplTest {
     @Transactional
     @Rollback
     public void testFailingScenario() {
-        // 故意使测试失败，以触发 Bug Report
+        // intent to give bug report
         tasks newTask = new tasks();
         newTask.setTaskName("Failing Task");
         newTask.setTaskDescription("This task is meant to fail.");
