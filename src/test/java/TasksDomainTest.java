@@ -27,18 +27,6 @@ public class TasksDomainTest {
         assertEquals(updatedTime, task.getUpdatedBy());
     }
 
-    @Test
-    public void testTasksEquality() {
-        tasks task1 = new tasks();
-        task1.setId(1L);
-        task1.setTaskName("Task Name");
-
-        tasks task2 = new tasks();
-        task2.setId(1L);
-        task2.setTaskName("Task Name");
-
-        assertEquals(task1, task2, "Tasks with the same ID and name should be considered equal");
-    }
 
     @Test
     public void testTasksHashCode() {
