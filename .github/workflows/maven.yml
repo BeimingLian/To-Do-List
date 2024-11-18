@@ -1,5 +1,5 @@
 name: Java CI with Maven
-
+a test for bug tracking
 on:
   push:
     branches: 
