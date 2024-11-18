@@ -1,5 +1,5 @@
 name: Java CI with Maven
-a test for bug tracking
+
 on:
   push:
     branches: 
@@ -63,6 +63,12 @@ jobs:
       - name: Generate code coverage report
         run: mvn jacoco:report
 
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
       - name: Create GitHub Issue if build fails
         if: failure()
         uses: peter-evans/create-issue-from-file@v4
@@ -93,6 +99,13 @@ jobs:
       - name: Generate code coverage report for service tests
         if: github.ref == 'refs/heads/service'
         run: mvn jacoco:report
+
+      - name: Upload JaCoCo report for service tests
+        if: github.ref == 'refs/heads/service'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-service-report
+          path: target/site/jacoco
 
       - name: Create GitHub Issue if service tests fail
         if: failure()
@@ -125,6 +138,13 @@ jobs:
         if: github.ref == 'refs/heads/controller'
         run: mvn jacoco:report
 
+      - name: Upload JaCoCo report for controller tests
+        if: github.ref == 'refs/heads/controller'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-controller-report
+          path: target/site/jacoco
+
       - name: Create GitHub Issue if controller tests fail
         if: failure()
         uses: peter-evans/create-issue-from-file@v4
@@ -156,6 +176,13 @@ jobs:
         if: github.ref == 'refs/heads/mapper'
         run: mvn jacoco:report
 
+      - name: Upload JaCoCo report for mapper tests
+        if: github.ref == 'refs/heads/mapper'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-mapper-report
+          path: target/site/jacoco
+
       - name: Create GitHub Issue if mapper tests fail
         if: failure()
         uses: peter-evans/create-issue-from-file@v4
@@ -186,6 +213,13 @@ jobs:
       - name: Generate code coverage report for domain tests
         if: github.ref == 'refs/heads/domain'
         run: mvn jacoco:report
+
+      - name: Upload JaCoCo report for domain tests
+        if: github.ref == 'refs/heads/domain'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-domain-report
+          path: target/site/jacoco
 
       - name: Create GitHub Issue if domain tests fail
         if: failure()
