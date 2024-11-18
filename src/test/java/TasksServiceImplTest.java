@@ -80,7 +80,7 @@ public class TasksServiceImplTest {
         newTask.setStatus("Pending");
         newTask.setUserId(5L);
 
-        // 使其失败的验证条件
+
         assertEquals(1, 2, "This is a deliberate failure to test the bug reporting mechanism.");
     }
 
