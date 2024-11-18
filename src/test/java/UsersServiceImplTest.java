@@ -50,7 +50,7 @@ public class UsersServiceImplTest {
 
     @Test
     public void testDeleteUser() {
-        Long userId = 2L;
+        Long userId = 6L;
         users user = usersService.selectUserById(userId);
         assertNotNull(user, "User should exist before deletion");
 

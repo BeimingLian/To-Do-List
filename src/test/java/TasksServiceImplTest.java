@@ -52,7 +52,7 @@ public class TasksServiceImplTest {
     @Test
     public void testDeleteTask() {
         // Assuming that you have already inserted a task with ID 1 for testing.
-        Long taskId = 10L;
+        Long taskId = 16L;
 
         // First, ensure the task exists by checking if it can be fetched
         tasks task = tasksService.selectTaskById(taskId);
@@ -65,23 +65,23 @@ public class TasksServiceImplTest {
         tasks deletedTask = tasksService.selectTaskById(taskId);
         assertNull(deletedTask); // The task should no longer exist
     }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void testFailingScenario() {
-
-        // intent to give bug report
-
-        tasks newTask = new tasks();
-        newTask.setTaskName("Failing Task");
-        newTask.setTaskDescription("This task is meant to fail.");
-        newTask.setDueDate("2024-12-15");
-        newTask.setStatus("Pending");
-        newTask.setUserId(5L);
-
-
-        assertEquals(1, 2, "This is a deliberate failure to test the bug reporting mechanism.");
-    }
+//
+//    @Test
+//    @Transactional
+//    @Rollback
+//    public void testFailingScenario() {
+//
+//        // intent to give bug report
+//
+//        tasks newTask = new tasks();
+//        newTask.setTaskName("Failing Task");
+//        newTask.setTaskDescription("This task is meant to fail.");
+//        newTask.setDueDate("2024-12-15");
+//        newTask.setStatus("Pending");
+//        newTask.setUserId(5L);
+//
+//
+//        assertEquals(1, 2, "This is a deliberate failure to test the bug reporting mechanism.");
+//    }
 
 }
