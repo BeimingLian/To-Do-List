@@ -22,6 +22,7 @@ on:
       
 jobs:
   build:
+    if: github.ref == 'refs/heads/service' || github.ref == 'refs/heads/controller' || github.ref == 'refs/heads/mapper'
     runs-on: ubuntu-latest
     services:
       db:
@@ -126,7 +127,6 @@ jobs:
       - name: Build and run domain tests
         if: github.ref == 'refs/heads/domain'
         run: mvn -Dtest=org.demo.todo.domain.* test
-
 
       - name: Build and run domain tests
         if: github.ref == 'refs/heads/domain'
