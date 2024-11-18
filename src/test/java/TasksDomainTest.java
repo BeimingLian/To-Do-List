@@ -1,5 +1,6 @@
 import org.demo.todo.domain.tasks;
 import org.junit.jupiter.api.Test;
+import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TasksDomainTest {
@@ -12,16 +13,18 @@ public class TasksDomainTest {
         task.setDueDate("2024-11-20");
         task.setStatus("Pending");
         task.setUserId(1L);
-        task.setCreatedBy(String.valueOf(1L));
-        task.setUpdatedBy(String.valueOf(1L));
+        String createdTime = LocalDateTime.now().toString();
+        String updatedTime = LocalDateTime.now().toString();
+        task.setCreatedBy(createdTime);
+        task.setUpdatedBy(updatedTime);
 
         assertEquals("Test Task", task.getTaskName());
         assertEquals("This is a test task description.", task.getTaskDescription());
         assertEquals("2024-11-20", task.getDueDate());
         assertEquals("Pending", task.getStatus());
         assertEquals(1L, task.getUserId());
-        assertEquals(1L, task.getCreatedBy());
-        assertEquals(1L, task.getUpdatedBy());
+        assertEquals(createdTime, task.getCreatedBy());
+        assertEquals(updatedTime, task.getUpdatedBy());
     }
 
     @Test
