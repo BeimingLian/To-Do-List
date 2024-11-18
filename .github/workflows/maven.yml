@@ -2,22 +2,84 @@ name: Java CI with Maven
 
 on:
   push:
-    branches:
-      - main
-      - service
-      - settings
-      - domain
-      - xml-files
+    branches: 
+      - "master"
+      - "settings"
+      - "xml-files"
+      - "service"
+      - "domain"
+      - "controller"
+      - "mapper"
   pull_request:
-    branches:
-      - main
-      - service
-      - settings
-      - domain
-      - xml-files
-
+    branches: 
+      - "master"
+      - "settings"
+      - "xml-files"
+      - "service"
+      - "domain"
+      - "controller"
+      - "mapper"
+      
 jobs:
   build:
+    if: github.ref == 'refs/heads/service' || github.ref == 'refs/heads/controller' || github.ref == 'refs/heads/mapper'
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:latest
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: to-do-list
+          MYSQL_USER: Beiming
+          MYSQL_PASSWORD: 518105309
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          until mysql -h 127.0.0.1 -u Beiming -p518105309 -e "SHOW DATABASES;"; do sleep 1; done
+
+      - name: Build with Maven
+        run: mvn clean package -Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/to-do-list
+
+      - name: Generate code coverage report
+        run: mvn jacoco:report
+
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
+      - name: Create GitHub Issue if build fails
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Build Failure - ${{ github.sha }}"
+          content: |
+            The build for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
+
+  service-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,68 +90,145 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v4
+      - name: Build and run service tests
+        if: github.ref == 'refs/heads/service'
+        run: mvn -Dtest=org.demo.todo.service.* test
+
+      - name: Generate code coverage report for service tests
+        if: github.ref == 'refs/heads/service'
+        run: mvn jacoco:report
+
+      - name: Upload JaCoCo report for service tests
+        if: github.ref == 'refs/heads/service'
+        uses: actions/upload-artifact@v3
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven
+          name: jacoco-service-report
+          path: target/site/jacoco
 
-      - name: Build with Maven
-        run: mvn -B clean install
+      - name: Create GitHub Issue if service tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Service Tests Failure - ${{ github.sha }}"
+          content: |
+            The service tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
 
-  service-tests:
-    if: github.ref == 'refs/heads/service'
+  controller-tests:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'adopt'
-      - name: Run Service Tests
-        run: mvn -B test -Dtest=TasksServiceImplTest
+          distribution: 'temurin'
 
-  settings-tests:
-    if: github.ref == 'refs/heads/settings'
+      - name: Build and run controller tests
+        if: github.ref == 'refs/heads/controller'
+        run: mvn -Dtest=org.demo.todo.controller.* test
+
+      - name: Generate code coverage report for controller tests
+        if: github.ref == 'refs/heads/controller'
+        run: mvn jacoco:report
+
+      - name: Upload JaCoCo report for controller tests
+        if: github.ref == 'refs/heads/controller'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-controller-report
+          path: target/site/jacoco
+
+      - name: Create GitHub Issue if controller tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Controller Tests Failure - ${{ github.sha }}"
+          content: |
+            The controller tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
+
+  mapper-tests:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'adopt'
-      - name: Test Database Connection
-        run: mvn -B exec:java -Dexec.mainClass="org.demo.todo.settings.DatabaseTest"
+          distribution: 'temurin'
+
+      - name: Build and run mapper tests
+        if: github.ref == 'refs/heads/mapper'
+        run: mvn -Dtest=org.demo.todo.mapper.* test
+
+      - name: Generate code coverage report for mapper tests
+        if: github.ref == 'refs/heads/mapper'
+        run: mvn jacoco:report
+
+      - name: Upload JaCoCo report for mapper tests
+        if: github.ref == 'refs/heads/mapper'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-mapper-report
+          path: target/site/jacoco
+
+      - name: Create GitHub Issue if mapper tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Mapper Tests Failure - ${{ github.sha }}"
+          content: |
+            The mapper tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
 
   domain-tests:
-    if: github.ref == 'refs/heads/domain'
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: 'adopt'
-      - name: Run Domain Tests
-        run: mvn -B test -Dtest=DomainTests
 
-  xml-files-tests:
-    if: github.ref == 'refs/heads/xml-files'
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'adopt'
-      - name: Validate XML Files
-        run: mvn validate
+          distribution: 'temurin'
+
+      - name: Build and run domain tests
+        if: github.ref == 'refs/heads/domain'
+        run: mvn -Dtest=org.demo.todo.domain.* test
+
+      - name: Generate code coverage report for domain tests
+        if: github.ref == 'refs/heads/domain'
+        run: mvn jacoco:report
+
+      - name: Upload JaCoCo report for domain tests
+        if: github.ref == 'refs/heads/domain'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-domain-report
+          path: target/site/jacoco
+
+      - name: Create GitHub Issue if domain tests fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "Domain Tests Failure - ${{ github.sha }}"
+          content: |
+            The domain tests for commit ${{ github.sha }} failed. Please check the logs for more details.
+          labels: |
+            bug
+
 
