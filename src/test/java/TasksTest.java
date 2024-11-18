@@ -2,7 +2,7 @@ import org.demo.todo.domain.tasks;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TasksTest{
+public class TasksTest {
 
     @Test
     public void testTaskProperties() {
