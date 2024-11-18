@@ -2,63 +2,49 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: 
-      - "master"
-      - "settings"
-      - "xml-files"
-      - "service"
-      - "domain"
-      - "controller"
-  pull_request:
-    branches: 
-      - "master"
-      - "settings"
-      - "xml-files"
-      - "service"
-      - "domain"
-      - "controller"
+    branches:
+      - main
+      - service
+      - settings
+      - domain
+      - xml-files
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      db:
-        image: mysql:latest
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: to-do-list
-          MYSQL_USER: Beiming
-          MYSQL_PASSWORD: 518105309
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+
+    strategy:
+      matrix:
+        module: [all, service, settings, domain, xml-files]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: 'temurin'
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'temurin' # Ensure Temurin JDK is used
 
-      - name: Wait for MySQL to be ready
-        run: |
-          echo "Waiting for MySQL to be ready..."
-          until mysql -h 127.0.0.1 -u Beiming -p518105309 -e "SHOW DATABASES;"; do sleep 1; done
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-maven
 
-      - name: Build and test with Maven
-        run: mvn clean test -Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/to-do-list
+    - name: Build with Maven
+      run: |
+        if [[ "${{ github.ref_name }}" == "service" ]]; then
+          mvn -pl :service -am clean test
+        elif [[ "${{ github.ref_name }}" == "settings" ]]; then
+          mvn -pl :settings -am clean test
+        elif [[ "${{ github.ref_name }}" == "domain" ]]; then
+          mvn -pl :domain -am clean test
+        elif [[ "${{ github.ref_name }}" == "xml-files" ]]; then
+          mvn -pl :xml-files -am clean test
+        else
+          mvn clean test
+        fi
 
