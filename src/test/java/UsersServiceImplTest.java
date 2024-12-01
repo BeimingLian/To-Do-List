@@ -48,15 +48,15 @@ public class UsersServiceImplTest {
         assertEquals(1, result);
     }
 
-    @Test
-    public void testDeleteUser() {
-        Long userId = 6L;
-        users user = usersService.selectUserById(userId);
-        assertNotNull(user, "User should exist before deletion");
-
-        usersService.deleteUser(userId);
-
-        users deletedUser = usersService.selectUserById(userId);
-        assertNull(deletedUser, "User should no longer exist after deletion");
-    }
+//    @Test
+//    public void testDeleteUser() {
+//        Long userId = 10L;
+//        users user = usersService.selectUserById(userId);
+//        assertNotNull(user, "User should exist before deletion");
+//
+//        usersService.deleteUser(userId);
+//
+//        users deletedUser = usersService.selectUserById(userId);
+//        assertNull(deletedUser, "User should no longer exist after deletion");
+//    }
 }

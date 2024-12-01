@@ -38,4 +38,10 @@ public class tasksServiceImpl implements tasksService {
     public void deleteTask(Long id) {
         taskMapper.deleteTask(id);
     }
+
+    @Override
+    public List<tasks> findAllTasksByUserId(Long userId) {
+        return taskMapper.findAllTasksByUserId(userId);
+    }
+
 }

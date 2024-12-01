@@ -15,4 +15,8 @@ public interface tasksMapper {
     int updateTask(tasks task);
 
     void deleteTask(Long id);
+
+    List<tasks> findAllTasksByUserId(Long userId);
+
+
 }

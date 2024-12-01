@@ -2,7 +2,7 @@ package org.demo.todo.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.demo.todo.domain.users;
-
+import org.apache.ibatis.annotations.Param;
 import java.util.List;
 @Mapper
 public interface usersMapper {
@@ -15,4 +15,8 @@ public interface usersMapper {
     int updateUser(users user);
 
     void deleteUser(Long id);
+
+    users findUserByNameAndPassword(@Param("userName") String userName, @Param("password") String password);
+
+    users findUserByName(String userName);
 }

@@ -40,4 +40,24 @@
         FROM users
         WHERE User_id = #{id}
     </select>
+
+    <!-- 查询用户名和密码是否匹配 -->
+    <select id="findUserByNameAndPassword" parameterType="map" resultType="org.demo.todo.domain.users">
+        SELECT User_id AS id,
+               User_name AS userName,
+               Password AS password,
+               Email AS email
+        FROM users
+        WHERE User_name = #{userName} AND Password = #{password}
+    </select>
+
+    <!-- 根据用户名查询用户 -->
+    <select id="findUserByName" parameterType="string" resultType="org.demo.todo.domain.users">
+        SELECT User_id AS id,
+               User_name AS userName,
+               Password AS password,
+               Email AS email
+        FROM users
+        WHERE User_name = #{userName}
+    </select>
 </mapper>

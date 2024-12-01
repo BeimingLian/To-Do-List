@@ -43,4 +43,21 @@
         WHERE Task_id = #{id}
     </select>
 
+
+        <!-- 查询用户的所有任务 -->
+        <select id="findAllTasksByUserId" parameterType="long" resultType="org.demo.todo.domain.tasks">
+            SELECT
+                Task_id AS id,
+                Task_name AS taskName,
+                Task_description AS taskDescription,
+                Due_date AS dueDate,
+                Status AS status,
+                User_id AS userId,
+                Created_by AS createdBy,
+                Update_by AS updatedBy
+            FROM tasks
+            WHERE User_id = #{userId}
+        </select>
+
+
 </mapper>

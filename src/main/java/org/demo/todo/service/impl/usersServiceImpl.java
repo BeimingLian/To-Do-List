@@ -38,4 +38,17 @@ public class usersServiceImpl implements usersService {
     public void deleteUser(Long id) {
         userMapper.deleteUser(id);
     }
+
+    @Override
+    public users findUserByNameAndPassword(String userName, String password) {
+        return userMapper.findUserByNameAndPassword(userName, password);
+    }
+
+    @Override
+    public users findUserByName(String userName) {
+        return userMapper.findUserByName(userName);
+    }
+
+
+
 }

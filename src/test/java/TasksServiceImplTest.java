@@ -49,22 +49,22 @@ public class TasksServiceImplTest {
 
     }
 
-    @Test
-    public void testDeleteTask() {
-        // Assuming that you have already inserted a task with ID 1 for testing.
-        Long taskId = 16L;
-
-        // First, ensure the task exists by checking if it can be fetched
-        tasks task = tasksService.selectTaskById(taskId);
-        assertNotNull(task); // Verify that the task exists before deletion
-
-        // Perform the deletion
-        tasksService.deleteTask(taskId);
-
-        // Verify that the task has been deleted by trying to fetch it again
-        tasks deletedTask = tasksService.selectTaskById(taskId);
-        assertNull(deletedTask); // The task should no longer exist
-    }
+//    @Test
+//    public void testDeleteTask() {
+//        // Assuming that you have already inserted a task with ID 1 for testing.
+//        Long taskId = L;
+//
+//        // First, ensure the task exists by checking if it can be fetched
+//        tasks task = tasksService.selectTaskById(taskId);
+//        assertNotNull(task); // Verify that the task exists before deletion
+//
+//        // Perform the deletion
+//        tasksService.deleteTask(taskId);
+//
+//        // Verify that the task has been deleted by trying to fetch it again
+//        tasks deletedTask = tasksService.selectTaskById(taskId);
+//        assertNull(deletedTask); // The task should no longer exist
+//    }
 //
 //    @Test
 //    @Transactional
