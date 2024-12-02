@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>任务列表</title>
+  <title>Task List</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -26,10 +26,6 @@
       padding: 10px;
       text-align: left;
       border-bottom: 1px solid #ccc;
-    }
-    .actions form {
-      display: inline-block;
-      margin: 0;
     }
     .actions button {
       margin-right: 5px;
@@ -68,7 +64,7 @@
       border-radius: 5px;
       display: none;
     }
-    #addTaskForm input {
+    #addTaskForm input, #addTaskForm select {
       margin: 5px 0;
       padding: 8px;
       width: calc(100% - 20px);
@@ -92,55 +88,109 @@
       color: #fff;
     }
   </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 <div class="container">
-  <h1>任务列表</h1>
+  <h1>Task List</h1>
   <div class="add-task">
-    <button onclick="document.getElementById('addTaskForm').style.display='block'">新增任务</button>
+    <button onclick="document.getElementById('addTaskForm').style.display='block'">New task</button>
   </div>
   <table>
     <thead>
     <tr>
-      <th>任务名称</th>
-      <th>描述</th>
-      <th>截止日期</th>
-      <th>状态</th>
-      <th>操作</th>
+      <th>Task name</th>
+      <th>Description</th>
+      <th>Due date</th>
+      <th>Status</th>
+      <th>Operations</th>
     </tr>
     </thead>
-    <tbody>
-    <tr th:each="task : ${tasks}">
-      <td th:text="${task.taskName}">任务名称</td>
-      <td th:text="${task.taskDescription}">描述</td>
-      <td th:text="${task.dueDate}">截止日期</td>
-      <td th:text="${task.status == 1 ? '完成' : '未完成'}">状态</td>
+    <tbody id="taskTable">
+    <tr th:each="task : ${tasks}" th:attr="data-task-id=${task.id}">
+      <td contenteditable="true" th:text="${task.taskName}">Task Name</td>
+      <td contenteditable="true" th:text="${task.taskDescription}">Description</td>
+      <td contenteditable="true" th:text="${task.dueDate}">Due Date</td>
+      <td>
+        <select>
+          <option value="0" th:selected="${task.status == 0}">Not complete</option>
+          <option value="1" th:selected="${task.status == 1}">Completed</option>
+        </select>
+      </td>
       <td class="actions">
-        <form th:action="@{/task/update}" method="post">
-          <input type="hidden" name="taskId" th:value="${task.id}" />
-          <button type="submit">修改</button>
-        </form>
-        <form th:action="@{/task/delete}" method="post">
-          <input type="hidden" name="taskId" th:value="${task.id}" />
-          <input type="hidden" name="userId" th:value="${userId}" />
-          <button class="delete" type="submit">删除</button>
-        </form>
+        <button class="complete-btn">Complete</button>
+        <button class="delete-btn delete">Delete</button>
       </td>
     </tr>
     </tbody>
   </table>
 
-  <!-- 添加任务的表单 -->
+  <!-- Add task form -->
   <div id="addTaskForm">
     <form th:action="@{/task/add}" method="post">
-      <input type="text" name="taskName" placeholder="任务名称" required />
-      <input type="text" name="taskDescription" placeholder="描述" required />
-      <input type="date" name="dueDate" placeholder="截止日期" required />
+      <input type="text" name="taskName" placeholder="Task name" required />
+      <input type="text" name="taskDescription" placeholder="Description" required />
+      <input type="date" name="dueDate" placeholder="Due date" required />
       <input type="hidden" name="userId" th:value="${userId}" />
-      <button type="submit">添加任务</button>
-      <button type="button" id="closeForm" onclick="document.getElementById('addTaskForm').style.display='none'">关闭</button>
+      <button type="submit">Add task</button>
+      <button type="button" id="closeForm" onclick="document.getElementById('addTaskForm').style.display='none'">Close</button>
     </form>
   </div>
 </div>
+
+<script>
+  // Update Task
+  $(document).on('click', '.complete-btn', function () {
+    const row = $(this).closest('tr');
+    const taskId = parseInt(row.data('task-id'), 10); // Ensure it's a number
+    if (isNaN(taskId)) {
+      alert('Invalid task ID!');
+      return;
+    }
+
+    // Get updated values from the row
+    const taskName = row.find('td').eq(0).text().trim();
+    const taskDescription = row.find('td').eq(1).text().trim();
+    const dueDate = row.find('td').eq(2).text().trim();
+    const status = row.find('select').val(); // Get the selected status value
+
+    $.ajax({
+      url: '/task/update',
+      type: 'POST',
+      data: {
+        taskId: taskId,
+        taskName: taskName,
+        taskDescription: taskDescription,
+        dueDate: dueDate,
+        status: status
+      },
+      success: function (response) {
+        alert('Task updated successfully!');
+      },
+      error: function () {
+        alert('Failed to update task.');
+      }
+    });
+  });
+
+  // Delete Task
+  $(document).on('click', '.delete-btn', function () {
+    const row = $(this).closest('tr');
+    const taskId = parseInt(row.data('task-id'), 10); // Ensure it's a number
+
+    $.ajax({
+      url: '/task/delete',
+      type: 'POST',
+      data: { taskId: taskId },
+      success: function (response) {
+        alert('Task deleted successfully!');
+        row.remove();
+      },
+      error: function () {
+        alert('Failed to delete task.');
+      }
+    });
+  });
+</script>
 </body>
 </html>

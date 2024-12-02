@@ -41,23 +41,31 @@ public class tasksController {
         newTask.setDueDate(dueDate);
         newTask.setUserId(userId);
         taskService.insertTask(newTask);
-        return "redirect:/task/list?userId=" + userId;
+        return "redirect:/task";
     }
 
     @PostMapping("/update")
-    public String updateTask(@RequestParam Long taskId, @RequestParam String taskName,
-                             @RequestParam String taskDescription, @RequestParam String dueDate) {
+    public String updateTask(@RequestParam("taskId") Long taskId,
+                             @RequestParam("taskName") String taskName,
+                             @RequestParam("taskDescription") String taskDescription,
+                             @RequestParam("dueDate") String dueDate,
+                             @RequestParam("status") String status) {
         tasks task = taskService.selectTaskById(taskId);
-        task.setTaskName(taskName);
-        task.setTaskDescription(taskDescription);
-        task.setDueDate(dueDate);
-        taskService.updateTask(task);
-        return "redirect:/task/list?userId=" + task.getUserId();
+        if (task != null) {
+            task.setTaskName(taskName);
+            task.setTaskDescription(taskDescription);
+            task.setDueDate(dueDate);
+            task.setStatus(status);
+            taskService.updateTask(task);
+        }
+        return "redirect:/task";
     }
 
+
     @PostMapping("/delete")
-    public String deleteTask(@RequestParam Long taskId, @RequestParam Long userId) {
+    public String deleteTask(@RequestParam("taskId") Long taskId) {
         taskService.deleteTask(taskId);
-        return "redirect:/task/list?userId=" + userId;
+        return "redirect:/task";
     }
+
 }
